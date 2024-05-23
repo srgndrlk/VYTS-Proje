@@ -45,7 +45,7 @@ LEFT JOIN Kimlik AS Kimlik_1 ON Customer.KimlikNo = Kimlik_1.KimlikNo;
 
 --Tarih ve Zamanı ayırdıktan sonra
 
-SELECT Calls.CallsIds,
+SELECT Calls.CallsID,
        Calls.Tarih AS Tarih,
        Calls.BaslamaZamani AS BaslamaZamani,
 	   Calls.BitisZamani AS BitisZamani,

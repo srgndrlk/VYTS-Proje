@@ -9,40 +9,41 @@
 DROP TABLE Calls;
 DROP TABLE Personel;
 DROP TABLE Customer;
-DROP TABLE demotbl1;
-
+DROP TABLE İtirazlar;
+DROP TABLE Primler;
+DROP TABLE Counter;
 -- Finally, drop the Kimlik table
 DROP TABLE Kimlik;
 */
 
 CREATE TABLE Kimlik( --bütün kullanıcılar için temel kullanıcı bilgisi personel Müşteriler için Customer herrkes için
-    KimlikNo decimal(8,0) PRIMARY KEY,
+    KimlikNo INT PRIMARY KEY IDENTITY(1,1),
     adi varchar(10),
     soyadi varchar(10)
 );
 
 CREATE TABLE Personel( --Çalışanlar için
-    KimlikNo decimal(8,0) PRIMARY KEY REFERENCES Kimlik(KimlikNo) ON DELETE CASCADE,
-    SicilNo decimal(6,0) UNIQUE,
+   KimlikNo INT FOREIGN KEY REFERENCES Kimlik(KimlikNo) ON DELETE CASCADE,
+    SicilNo INT PRIMARY KEY IDENTITY(1,1),
     Prim money,
-    CallsIds varchar(9)
+    CallsID int
 );
 
 CREATE TABLE Customer( --Müşteriler için Customerlerin bilgisi
-    KimlikNo decimal(8,0) PRIMARY KEY REFERENCES Kimlik(KimlikNo) ON DELETE CASCADE,
-    CustomerNo decimal(6,0) UNIQUE,
-    CallsIds varchar(9)
+    KimlikNo INT FOREIGN KEY REFERENCES Kimlik(KimlikNo) ON DELETE CASCADE,
+    CustomerNo INT PRIMARY KEY IDENTITY(1,1),
+    CallsID int
 );
 
 CREATE TABLE Calls(
-    CallsIds INT PRIMARY KEY IDENTITY(1,1),
+    CallsID INT PRIMARY KEY IDENTITY(1,1),
     Tarih date,
     BaslamaZamani time,
     BitisZamani time,
     AramaSebebi varchar(5) CHECK (AramaSebebi IN ('Talep', 'Ariza', 'Bilgi')),
     AramaSonucu varchar(12) CHECK (AramaSonucu IN ('Tamamlandi  ', 'DevamEtmekte', 'Olmadi      ')),
-    SicilNo decimal(6,0) REFERENCES Personel(SicilNo) ON DELETE CASCADE,
-    CustomerNo decimal(6,0) REFERENCES Customer(CustomerNo),
+    SicilNo INT REFERENCES Personel(SicilNo) ON DELETE CASCADE,
+    CustomerNo INT REFERENCES Customer(CustomerNo),
     CONSTRAINT Check_Baslama_Bitis CHECK (BaslamaZamani < BitisZamani)-- Baslama Bitisten küçük olmalı
 );
 --tarih zaman zaman sebep sonuc müsteriNo
@@ -50,16 +51,16 @@ CREATE TABLE Calls(
 -- CallsId otomatik belirlense güzel olur
 
 CREATE TABLE İtirazlar(
-    SicilNo decimal(6,0) REFERENCES Personel(SicilNo) ON DELETE CASCADE,
-    CallsIds varchar(9),
+    SicilNo INT REFERENCES Personel(SicilNo) ON DELETE CASCADE,
+    CallsID int,
     Aciklama text ,
-    Sonucu bit,
+    Sonucu bit
 );
 
 CREATE TABLE Primler(
-  SicilNo decimal(6,0) REFERENCES Personel(SicilNo) ON DELETE CASCADE,
-    CallsIds varchar(9),
-        Prim money,
+  SicilNo INT REFERENCES Personel(SicilNo) ON DELETE CASCADE,
+    CallsID int,
+    Prim money
 );
 
 CREATE TABLE Counter(
